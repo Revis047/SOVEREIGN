@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+poetry.lock
+node_modules/
+.next/
+dist/
+build/
+*.log
