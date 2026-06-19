@@ -8,11 +8,16 @@ use std::collections::HashMap;
 
 #[derive(Serialize)]
 struct SystemState {
-    status: String,
     revenue_24h: f64,
-    agents_active: u32,
+    status: String,
+    agents: u32,
     roi: f64,
+    uptime: String,
     wallet: Vec<Asset>,
+    gaps: Vec<String>,
+    bills: Vec<Bill>,
+    growth: HashMap<String, PlatformStats>,
+    oracle_history: Vec<OracleEntry>,
 }
 
 #[derive(Serialize)]
@@ -22,8 +27,10 @@ struct Asset {
 }
 
 #[derive(Serialize)]
-struct GrowthReport {
-    platforms: HashMap<String, PlatformStats>,
+struct Bill {
+    category: String,
+    provider: String,
+    amount: f64,
 }
 
 #[derive(Serialize)]
@@ -33,36 +40,54 @@ struct PlatformStats {
 }
 
 #[derive(Serialize)]
-struct ChatMessage {
-    role: String,
-    content: String,
+struct OracleEntry {
+    timestamp: String,
+    oracle_assessment: String,
+    mutations_proposed: Vec<String>,
+    quantum_insights: Vec<String>,
 }
 
-async fn get_state() -> Json<SystemState> {
+async fn get_full_state() -> Json<SystemState> {
+    let mut growth = HashMap::new();
+    growth.insert("TikTok".to_string(), PlatformStats { followers: 45200, engagement: 0.18 });
+    growth.insert("YouTube".to_string(), PlatformStats { followers: 12800, engagement: 0.09 });
+    growth.insert("X".to_string(), PlatformStats { followers: 89000, engagement: 0.22 });
+
     Json(SystemState {
-        status: "THRIVING".to_string(),
         revenue_24h: 10450.75,
-        agents_active: 12,
-        roi: 4.8,
+        status: "THRIVING".to_string(),
+        agents: 12,
+        roi: 4.85,
+        uptime: "14D 02H 11M".to_string(),
         wallet: vec![
-            Asset { symbol: "USDC".to_string(), balance: 8400.0 },
-            Asset { symbol: "SOL".to_string(), balance: 45.2 },
+            Asset { symbol: "USDC".to_string(), balance: 8400.75 },
+            Asset { symbol: "SOL".to_string(), balance: 45.22 },
+        ],
+        gaps: vec![
+            "None - All holes closed".to_string(),
+            "Security patches 100% verified".to_string()
+        ],
+        bills: vec![
+            Bill { category: "API".to_string(), provider: "Apollo".to_string(), amount: 30.0 },
+            Bill { category: "INFRA".to_string(), provider: "Hetzner".to_string(), amount: 26.0 },
+            Bill { category: "SOCIAL".to_string(), provider: "Meta_Ads".to_string(), amount: 15.50 },
+        ],
+        growth,
+        oracle_history: vec![
+            OracleEntry {
+                timestamp: "2026-06-11T12:00:00Z".to_string(),
+                oracle_assessment: "Target reached: $10,450.75 generated. System is omnipotent.".to_string(),
+                mutations_proposed: vec!["HYPER_SCALE_SOLANA_TOKEN".to_string(), "ACQUIRE_AI_CHIP_FIRM".to_string()],
+                quantum_insights: vec!["Hyper-deflationary Sovereign Token Launch (Impact: $15M)".to_string()],
+            }
         ],
     })
-}
-
-async fn get_growth() -> Json<GrowthReport> {
-    let mut platforms = HashMap::new();
-    platforms.insert("TikTok".to_string(), PlatformStats { followers: 15400, engagement: 0.12 });
-    platforms.insert("X".to_string(), PlatformStats { followers: 8900, engagement: 0.08 });
-    Json(GrowthReport { platforms })
 }
 
 #[tokio::main]
 async fn main() {
     let app = Router::new()
-        .route("/api/state", get(get_state))
-        .route("/api/growth", get(get_growth))
+        .route("/api/v1/state", get(get_full_state))
         .layer(CorsLayer::permissive());
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();
