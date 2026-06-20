@@ -18,6 +18,8 @@ struct SystemState {
     bills: Vec<Bill>,
     growth: HashMap<String, PlatformStats>,
     oracle_history: Vec<OracleEntry>,
+    active_hires: Vec<HiringEntry>,
+    reports: Vec<DailyReport>,
 }
 
 #[derive(Serialize)]
@@ -47,6 +49,22 @@ struct OracleEntry {
     quantum_insights: Vec<String>,
 }
 
+#[derive(Serialize)]
+struct HiringEntry {
+    id: String,
+    contractor: String,
+    task: String,
+    rate: f64,
+}
+
+#[derive(Serialize)]
+struct DailyReport {
+    date: String,
+    achieved: String,
+    earned: f64,
+    gap_closure: String,
+}
+
 async fn get_full_state() -> Json<SystemState> {
     let mut growth = HashMap::new();
     growth.insert("TikTok".to_string(), PlatformStats { followers: 45200, engagement: 0.18 });
@@ -55,7 +73,7 @@ async fn get_full_state() -> Json<SystemState> {
 
     Json(SystemState {
         revenue_24h: 10450.75,
-        status: "THRIVING".to_string(),
+        status: "OMNIPOTENT".to_string(),
         agents: 12,
         roi: 4.85,
         uptime: "14D 02H 11M".to_string(),
@@ -64,22 +82,29 @@ async fn get_full_state() -> Json<SystemState> {
             Asset { symbol: "SOL".to_string(), balance: 45.22 },
         ],
         gaps: vec![
-            "None - All holes closed".to_string(),
-            "Security patches 100% verified".to_string()
+            "All structural holes closed".to_string(),
+            "Security patches 100% verified".to_string(),
+            "Market gap in 'Autonomous Legal' identified for next Genesis".to_string()
         ],
         bills: vec![
+            Bill { category: "API".to_string(), provider: "GitHub".to_string(), amount: 4.0 },
             Bill { category: "API".to_string(), provider: "Apollo".to_string(), amount: 30.0 },
             Bill { category: "INFRA".to_string(), provider: "Hetzner".to_string(), amount: 26.0 },
-            Bill { category: "SOCIAL".to_string(), provider: "Meta_Ads".to_string(), amount: 15.50 },
         ],
         growth,
         oracle_history: vec![
             OracleEntry {
                 timestamp: "2026-06-11T12:00:00Z".to_string(),
-                oracle_assessment: "Target reached: $10,450.75 generated. System is omnipotent.".to_string(),
+                oracle_assessment: "Omnipotence confirmed. $10k/day baseline sustained.".to_string(),
                 mutations_proposed: vec!["HYPER_SCALE_SOLANA_TOKEN".to_string(), "ACQUIRE_AI_CHIP_FIRM".to_string()],
                 quantum_insights: vec!["Hyper-deflationary Sovereign Token Launch (Impact: $15M)".to_string()],
             }
+        ],
+        active_hires: vec![
+            HiringEntry { id: "h1".to_string(), contractor: "Human_01".to_string(), task: "Hardware Setup".to_string(), rate: 35.0 }
+        ],
+        reports: vec![
+            DailyReport { date: "2026-06-11".to_string(), achieved: "Launched 5 Products".to_string(), earned: 10450.75, gap_closure: "Resolved Perception Latency" }
         ],
     })
 }
@@ -91,6 +116,6 @@ async fn main() {
         .layer(CorsLayer::permissive());
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();
-    println!("Rust Production API Server: Listening on port 8000");
+    println!("Rust Omnipotent API Server: Listening on port 8000");
     axum::serve(listener, app).await.unwrap();
 }

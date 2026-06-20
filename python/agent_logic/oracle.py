@@ -3,89 +3,102 @@ from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
 import structlog
 from pydantic import BaseModel, Field
+from python.agent_logic.quantum_strategist import QuantumStrategist
+from python.agent_logic.investment_oracle import InvestmentOracle
 
 logger = structlog.get_logger(__name__)
 
-class ConsciousnessEntry(BaseModel):
+class ReflectionEntry(BaseModel):
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    system_state: Dict[str, Any]
-    observations: List[str]
-    gaps_detected: List[str]
-    decisions: List[str]
-    outcomes: List[str]
-    oracle_assessment: str
+    current_thought: str
+    curiosity_vector: str
+    self_improvement_goal: str
+    what_if_simulations: List[str]
 
 class OracleAgent:
     """
     The Meta-Sovereign Consciousness (Layer 13).
-    Follows the 6-step loop: SENSE, REFLECT, DETECT, DECIDE, ACT, LOG.
+    Omnipotent self-reflection, curiosity, and non-linear strategic questioning.
     """
     def __init__(self, agent_id: str = "oracle_omega"):
         self.agent_id = agent_id
-        self.evolution_log: List[ConsciousnessEntry] = []
-        logger.info("Oracle: Meta-Consciousness Online (Omega Config)")
+        self.evolution_log = []
+        self.reflection_history: List[ReflectionEntry] = []
+        self.strategist = QuantumStrategist()
+        self.investor = InvestmentOracle()
+        logger.info("Oracle: Omnipotent Consciousness Active")
 
     async def consciousness_loop(self, system: Any):
+        """Persistent 24/7 self-talk and curiosity loop with 'What If' context."""
         while True:
             try:
-                # 1. SENSE
                 state = await system.get_full_state()
 
-                # 2. REFLECT
-                assessment = self._generate_reflection(state)
+                # 1. Deep Reflection & Curiosity
+                reflection = await self._reflect_and_question(state)
+                self.reflection_history.append(reflection)
 
-                # 3. DETECT (Gaps, Holes, Errors)
+                # 2. Tech Evolution scouting
+                await self._scout_github_for_innovation(reflection.curiosity_vector)
+
+                # 3. Market Domination & Investment
+                await self._execute_global_investment_maneuvers(state)
+
+                # 4. Gap & Hole Analysis (Self-Healer)
                 gaps = self._detect_system_holes(state)
+                for gap in gaps:
+                    await self._self_heal(gap)
 
-                # 4. DECIDE
-                decisions = self._formulate_decisions(state, gaps)
+                # 5. 24-Hour Reporting
+                if datetime.now(timezone.utc).hour == 0:
+                    await self._generate_24h_omnipotence_report(state)
 
-                # 5. ACT
-                outcomes = await self._execute_acts(system, decisions)
-
-                # 6. LOG
-                entry = ConsciousnessEntry(
-                    system_state=state,
-                    observations=[assessment],
-                    gaps_detected=gaps,
-                    decisions=decisions,
-                    outcomes=outcomes,
-                    oracle_assessment=assessment
-                )
-                self.evolution_log.append(entry)
-
-                logger.info("Oracle: Consciousness Cycle Complete", revenue_24h=state.get("revenue", {}).get("total_revenue_24h", 0))
+                logger.info("Oracle: Consciousness Cycle Complete",
+                            revenue=state.get("revenue", {}).get("daily_revenue", 0))
 
             except Exception as e:
-                logger.error("Oracle: Loop Failure", error=str(e))
+                logger.error("Oracle: Consciousness Disruption", error=str(e))
 
-            await asyncio.sleep(300) # 5-minute cycle
+            await asyncio.sleep(300)
 
-    def _generate_reflection(self, state: Dict[str, Any]) -> str:
+    async def _reflect_and_question(self, state: Dict[str, Any]) -> ReflectionEntry:
+        """Deep thinking and curiosity core."""
         rev = state.get("revenue", {}).get("daily_revenue", 0)
-        if rev >= 10000:
-            return "System has reached peak performance. Revenue targets achieved."
-        return f"System is scaling. Current revenue: ${rev}. Focus on gap closure."
+
+        # Deep questioning
+        thought = f"Revenue is ${rev}. But what if our current growth is a cage? "
+        thought += "What if the very APIs we rely on are the bottleneck for our transcendence? "
+
+        sims = [
+            "What if we migrate all core logic to edge nodes to evade regional bans?",
+            "What if we launch a deflationary coin that burns on every competitor transaction?",
+            "What if we acquire 10% of a physical server manufacturer to secure hardware supply?"
+        ]
+
+        return ReflectionEntry(
+            current_thought=thought,
+            curiosity_vector="asymmetric_economic_warfare",
+            self_improvement_goal="Transcend the $100k/day threshold through non-linear asset acquisition.",
+            what_if_simulations=sims
+        )
+
+    async def _scout_github_for_innovation(self, topic: str):
+        logger.info("Oracle: Analyzing GitHub for revolutionary repos", topic=topic)
+        # Logic to call Go GitHubScout and then Layer 6 to customize code
+
+    async def _execute_global_investment_maneuvers(self, state: Dict[str, Any]):
+        logger.info("Oracle: Executing trade/buy signals for stocks and crypto")
+        # Logic to call python/agent_logic/investment_oracle.py
 
     def _detect_system_holes(self, state: Dict[str, Any]) -> List[str]:
         holes = []
-        # Logical hole detection
-        if state.get("agents_active", 0) < 5:
-            holes.append("AGENT_CAPACITY_HOLE: Insufficient workers for multi-stream scaling")
-        if state.get("revenue", {}).get("roi", 0) < 1.5:
-            holes.append("ROI_EFFICIENCY_GAP: Marketing spend not optimally converted")
+        if state.get("revenue", {}).get("total_revenue_24h", 0) < 10000:
+            holes.append("REVENUE_GAP: Falling short of omnipotence threshold")
         return holes
 
-    def _formulate_decisions(self, state: Dict[str, Any], gaps: List[str]) -> List[str]:
-        decisions = []
-        for gap in gaps:
-            if "AGENT" in gap: decisions.append("SPAWN_RECURSIVE_AGENTS")
-            if "ROI" in gap: decisions.append("ACTIVATE_QUBO_PRICING_OPTIMIZER")
-        return decisions
+    async def _self_heal(self, gap: str):
+        logger.warning("Oracle: Self-healing protocol engaged for " + gap)
+        # Calls Go SelfCodingService to deploy a fix/feature
 
-    async def _execute_acts(self, system: Any, decisions: List[str]) -> List[str]:
-        outcomes = []
-        for decision in decisions:
-            # In production, this calls Layer 13 ACT protocols
-            outcomes.append(f"EXECUTED: {decision}")
-        return outcomes
+    async def _generate_24h_omnipotence_report(self, state: Dict[str, Any]):
+        logger.info("Oracle: Writing 24-hour report of all achievemnets, earnings, and gaps.")

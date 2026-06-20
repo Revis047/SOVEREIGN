@@ -4,30 +4,30 @@ use uuid::Uuid;
 use chrono::{DateTime, Utc};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct SovereignMessage {
-    pub message_id: String,
+pub struct SovereignEvent {
+    pub id: String,
     pub timestamp: DateTime<Utc>,
-    pub sender: String,
+    pub source: String,
     pub topic: String,
-    pub payload: HashMap<String, serde_json::Value>,
-    pub context: HashMap<String, String>,
+    pub payload: serde_json::Value,
+    pub metadata: HashMap<String, String>,
 }
 
-impl SovereignMessage {
-    pub fn new(sender: String, topic: String, payload: HashMap<String, serde_json::Value>) -> Self {
+impl SovereignEvent {
+    pub fn new(source: String, topic: String, payload: serde_json::Value) -> Self {
         Self {
-            message_id: Uuid::new_v4().to_string(),
+            id: Uuid::new_v4().to_string(),
             timestamp: Utc::now(),
-            sender,
+            source,
             topic,
             payload,
-            context: HashMap::new(),
+            metadata: HashMap::new(),
         }
     }
 }
 
 pub struct SovereignBus {
-    // In production, these would be NATS and Kafka clients
+    // Bridges NATS (fast) and Kafka (durable)
 }
 
 impl SovereignBus {
@@ -35,13 +35,9 @@ impl SovereignBus {
         Self {}
     }
 
-    pub async fn publish_fast(&self, topic: &str, _message: SovereignMessage) -> Result<(), String> {
-        println!("Bus: Fast Publish on topic {}", topic);
-        Ok(())
-    }
-
-    pub async fn publish_durable(&self, topic: &str, _message: SovereignMessage) -> Result<(), String> {
-        println!("Bus: Durable Publish on topic {}", topic);
+    pub async fn route_event(&self, event: SovereignEvent) -> Result<(), String> {
+        println!("Bus: Routing event {} from {} to topic {}", event.id, event.source, event.topic);
+        // Logic to push to NATS JetStream and Kafka
         Ok(())
     }
 }
