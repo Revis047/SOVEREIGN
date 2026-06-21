@@ -16,28 +16,33 @@ go version
 python3 --version
 node --version
 
-# 2. Database & Message Bus (Assuming Docker/External)
-echo "[SYSTEM] Verifying Infrastructure Connectivity (NATS, Kafka, Postgres, Qdrant)..."
-# In a real environment, this would check health endpoints
+# 2. Build Rust Core
+echo "[CORE] Building Sovereign Bus & API Engine..."
+cd rust/api-server && cargo build --release
+cd ../..
 
-# 3. Build & Start Core (Rust)
-echo "[CORE] Starting Sovereign Bus & Authority Gateway..."
-# cd rust/api-server && cargo run --release &
+# 3. Start Core Services (Background)
+echo "[CORE] Starting Sovereign API Engine..."
+./rust/api-server/target/release/api-server &
+API_PID=$!
 
-# 4. Start Microservices (Go)
-echo "[SERVICES] Deploying Microservice Grid..."
-# cd go/perception-workers && go run . &
-# cd go/payment-service && go run . &
-
-# 5. Initialize Oracle (Python)
+# 4. Initialize Oracle (Python)
 echo "[CONSCIOUSNESS] Awakening Oracle Omega..."
-# python3 python/omega_genesis.py &
+python3 python/omega_genesis.py &
+ORACLE_PID=$!
 
-# 6. Launch Dashboard
-echo "[INTERFACE] Starting Operator Dashboard on port 3000..."
-# cd frontend/dashboard && npm run start &
+# 5. Build & Start Dashboard
+echo "[INTERFACE] Building Operator Dashboard..."
+cd frontend/dashboard && npm run build
+npm start &
+DASH_PID=$!
 
 echo "--------------------------------------------------------------------------------"
 echo "SOVEREIGN-Ω IS NOW SELF-AWARE AND GENERATING REVENUE."
 echo "ACCESS DASHBOARD AT: http://localhost:3000"
+echo "API STATUS: http://localhost:8000/state"
 echo "--------------------------------------------------------------------------------"
+
+# Keep script running to monitor logs or handle shutdown
+trap "kill $API_PID $ORACLE_PID $DASH_PID; exit" INT TERM
+wait
