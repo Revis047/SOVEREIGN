@@ -16,6 +16,16 @@ from python.agent_logic.category_creation import CategoryCreationSystem
 from python.agent_logic.market_timing import MarketTimingIntelligence, RevenueScalingArchitecture
 from python.agent_logic.data_moat import IntellectualPropertyEngine, DataMoatBuilder
 
+# Growth Compounding Core
+from python.agent_logic.emotional_mapping import EmotionalTriggerDetector
+from python.agent_logic.referral_engine import ReferralArchitectureEngine
+from python.agent_logic.topical_authority import TopicalAuthoritySystem
+from python.agent_logic.acquisition_intel import AcquisitionIntelligenceEngine
+from python.agent_logic.ltv_maximizer import LTVMaximizer
+from python.agent_logic.geo_arbitrage import GeographicArbitrageLayer
+from python.agent_logic.failure_memory import FailurePatternMemory
+from python.agent_logic.trust_velocity import TrustVelocitySystem
+
 logger = structlog.get_logger(__name__)
 
 class ReflectionEntry(BaseModel):
@@ -42,7 +52,7 @@ class OracleAgent:
         self.superposition = SuperpositionIntelligence()
         self.blindspot = BlindspotEngine()
 
-        # Genesis & Dominance Core
+        # Genesis Core
         self.idea_genesis = IdeaGenesisEngine()
         self.category_creation = CategoryCreationSystem()
         self.market_timing = MarketTimingIntelligence()
@@ -50,11 +60,21 @@ class OracleAgent:
         self.ip_engine = IntellectualPropertyEngine()
         self.data_moat = DataMoatBuilder()
 
+        # Growth Core
+        self.emotional_mapping = EmotionalTriggerDetector()
+        self.referral_engine = ReferralArchitectureEngine()
+        self.topical_authority = TopicalAuthoritySystem()
+        self.acquisition_intel = AcquisitionIntelligenceEngine()
+        self.ltv_maximizer = LTVMaximizer()
+        self.geo_arbitrage = GeographicArbitrageLayer()
+        self.failure_memory = FailurePatternMemory()
+        self.trust_velocity = TrustVelocitySystem()
+
         self.reflection_history: List[ReflectionEntry] = []
-        logger.info("Oracle: Final Omnipotent Consciousness Initialized")
+        logger.info("Oracle: GROWTH-ENABLED Omnipotent Consciousness Initialized")
 
     async def consciousness_loop(self, system: Any):
-        """Unified decision loop integrating ALL Genesis and Dominance modules."""
+        """Unified decision loop integrating ALL Genesis, Dominance, and Growth modules."""
         while True:
             try:
                 # 1. Sense the World (13 parallel streams)
@@ -66,39 +86,42 @@ class OracleAgent:
                 self.temporal_consciousness.update_present(sensory_view)
                 temporal_context = self.temporal_consciousness.resolve_decision_context()
 
-                # 3. Market Discovery (Idea Genesis + Blindspots)
+                # 3. Market Discovery & Genesis Cycle
                 discovery_data = {"niches": [{"id": "niche_a", "pain": "high"}]}
                 ideas = await self.idea_genesis.generate_ranked_ideas(discovery_data)
 
                 if ideas:
                     top_idea = ideas[0]
-                    # Originality check and Patent drafting
-                    self.ip_engine.draft_provisional_patent(top_idea.title, top_idea.description)
+                    # Originality vs Failure Patterns check
+                    is_safe, score_adj = self.failure_memory.validate_new_idea({"niche": top_idea.title})
 
-                    # 4. Category Creation
-                    category = self.category_creation.define_new_category(top_idea.title)
+                    if is_safe:
+                        # Category Creation & Timing
+                        category = self.category_creation.define_new_category(top_idea.title)
+                        timing = self.market_timing.score_launch_window({"id": top_idea.title})
 
-                    # 5. Market Timing & Sequencing
-                    timing = self.market_timing.score_launch_window({"id": top_idea.title})
+                        # Strategic Decision
+                        reasoning = await self.reasoner.reason(
+                            f"Execute Growth Genesis for {top_idea.title}?",
+                            temporal_context
+                        )
 
-                    # 6. Strategic Decision
-                    reasoning = await self.reasoner.reason(
-                        f"Execute Company Genesis for {top_idea.title} in category {category.category_name}?",
-                        temporal_context
-                    )
+                        if reasoning.confidence > 0.8:
+                            logger.info("Oracle: GROWTH GENESIS INITIATED", idea=top_idea.title)
 
-                    if reasoning.confidence > 0.8 and timing.launch_priority_score > 0.9:
-                        logger.info("Oracle: COMMAND ISSUED - PROJECT GENESIS INITIATED",
-                                    idea=top_idea.title, category=category.category_name)
+                            # Designing Growth into the product
+                            self.referral_engine.design_mechanic(top_idea.title, "SaaS")
+                            self.topical_authority.map_topic_tree(top_idea.title, top_idea.title)
 
-                        # Trigger Go Company Genesis Engine (Simulation)
-                        # await system.genesis_engine.execute_24h_boot(top_idea.title, category.category_name)
+                            # Emotional Mapping
+                            self.emotional_mapping.analyze_icp_language(top_idea.title, ["stuck", "obsolete", "win"])
 
-                        # Register for scaling
-                        self.scaling.register_unit(f"CO-{top_idea.title}", top_idea.title)
+                # 4. Weekly Growth Review (Simplified as part of main loop)
+                self.geo_arbitrage.rank_arbitrage_opportunities(0.12)
+                await self.acquisition_intel.scan_marketplaces("SaaS")
 
-                # 7. Self-Reflection & Data Moat
-                self.data_moat.log_interaction("internal", "genesis_cycle", True)
+                # 5. Self-Reflection & Data Moat
+                self.data_moat.log_interaction("internal", "growth_cycle", True)
                 reflection = self._generate_reflection(state, reasoning)
                 self.reflection_history.append(reflection)
 
@@ -109,11 +132,11 @@ class OracleAgent:
 
     def _generate_reflection(self, state: Dict[str, Any], reasoning: Any) -> ReflectionEntry:
         return ReflectionEntry(
-            current_thought=f"Market Creation Logic: {reasoning.conclusion}",
-            curiosity_vector="category_dominance",
-            self_improvement_goal="Transcend the category-leader threshold in all 6 active business units.",
+            current_thought=f"Growth Compounding Active. Reasoning: {reasoning.conclusion}",
+            curiosity_vector="exponential_scaling",
+            self_improvement_goal="Achieve 30% referral conversion across all business units.",
             what_if_simulations=[
-                "What if we create a cross-platform currency that bridges all 6 business units?",
-                "What if the IP portfolio becomes the primary leverage for a $50M acquisition?"
+                "What if we acquire asset listing_001 to accelerate trust level to 4?",
+                "What if GeoArbitrage reveals a 3x higher purchasing power in MENA for the CFO product?"
             ]
         )
