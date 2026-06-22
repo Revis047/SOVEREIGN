@@ -147,3 +147,5 @@ async fn main() {
     println!("SOVEREIGN-Ω :: Rust API Engine :: Listening on port 8000");
     axum::serve(listener, app).await.unwrap();
 }
+
+mod resilience;

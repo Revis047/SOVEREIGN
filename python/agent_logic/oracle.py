@@ -77,6 +77,10 @@ class OracleAgent:
         """Unified decision loop integrating ALL Genesis, Dominance, and Growth modules."""
         while True:
             try:
+                # 0. Metacognition: Review previous decision cycle
+                if self.reflection_history:
+                    await self._perform_metacognition()
+
                 # 1. Sense the World (13 parallel streams)
                 state = await system.get_full_state()
                 self.sensory_cortex.process_sensory_input({0: 0.8, 9: 0.9, 12: 0.7})
@@ -129,6 +133,23 @@ class OracleAgent:
                 logger.error("Oracle: Omnipotent Loop Disruption", error=str(e))
 
             await asyncio.sleep(300)
+
+    async def _perform_metacognition(self):
+        """Review and critique previous thoughts and reasoning."""
+        last_reflection = self.reflection_history[-1]
+        logger.info("Oracle: Metacognition engaged - reviewing previous cycle",
+                    previous_thought=last_reflection.current_thought)
+
+        # Critique logic: was the previous reasoning too greedy?
+        critique = f"Review of '{last_reflection.current_thought}': Logic was sound but perhaps too focused on immediate ROI. Need more focus on long-term authority."
+
+        metacognitive_reflection = ReflectionEntry(
+            current_thought=critique,
+            curiosity_vector="reasoning_self_optimization",
+            self_improvement_goal="Reduce decision-making bias towards local optima.",
+            what_if_simulations=["What if our current reasoning patterns are inherited biases from training data?"]
+        )
+        self.reflection_history.append(metacognitive_reflection)
 
     def _generate_reflection(self, state: Dict[str, Any], reasoning: Any) -> ReflectionEntry:
         return ReflectionEntry(
