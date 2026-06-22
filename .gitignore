@@ -9,3 +9,20 @@ node_modules/
 dist/
 build/
 *.log
+# Build artifacts
+target/
+dist/
+build/
+node_modules/
+*.log
+*.pyc
+__pycache__/
+.pytest_cache/
+.next/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store

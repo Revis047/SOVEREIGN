@@ -5,7 +5,17 @@ edition = "2021"
 
 [dependencies]
 axum = "0.7"
-tokio = { version = "1.0", features = ["full"] }
+tokio = { version = "1.35", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tower-http = { version = "0.5", features = ["cors"] }
+anyhow = "1.0"
+reqwest = { version = "0.11", features = ["json"] }
+sovereign-bus = { path = "../sovereign-bus" }
+pheromone-engine = { path = "../pheromone-engine" }
+authority-gateway = { path = "../authority-gateway" }
+morphic-topology = { path = "../morphic-topology" }
+cognitive-plasma = { path = "../cognitive-plasma" }
+axum-extra = { version = "0.9", features = ["typed-header"] }
+tokio-tungstenite = "0.21"
+futures-util = "0.3"
